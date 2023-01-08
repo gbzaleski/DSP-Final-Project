@@ -1,22 +1,49 @@
 from analysis import *
+import argparse
 import difflib
+import sys
 
-
+# clear && python3 main.py API_NY.GDP.MKTP.CD_DS2_en_csv_v2_4751562/API_NY.GDP.MKTP.CD_DS2_en_csv_v2_4751562.csv API_SP.POP.TOTL_DS2_en_csv_v2_4751604/API_SP.POP.TOTL_DS2_en_csv_v2_4751604.csv co2-fossil-by-nation_zip/data/fossil-fuel-co2-emissions-by-nation_csv.csv -start 1950
 if __name__ == "__main__":
+
+    # Reads paths and limits
+    parser = argparse.ArgumentParser(description='Conducts data science analisys on emission, GDP and population')
+    parser.add_argument('GDP_path', type=str, help='path for csv file on GDP')
+    parser.add_argument('population_path', type=str, help='path for csv file on population')
+    parser.add_argument('emission_path', type=str, help='path for csv file on emission')
+    
+    parser.add_argument('-start', type=int, help='lower year threshold for analisys')
+    parser.add_argument('-koniec', type=int, help='upper year threshold for analisys')
+
+    # Infinity range
+    year_range_start = int(-1e9)
+    year_range_end = int(1e9)
+
+    args = parser.parse_args()
+
+    if args.start != None:
+        year_range_start = args.start
+
+    if args.koniec != None:
+        year_range_end = args.koniec
+
+    print(args.GDP_path, args.population_path, args.emission_path)
+    print(year_range_start, year_range_end)
+
     # Read data
-    emissions = pd.read_csv('co2-fossil-by-nation_zip/data/fossil-fuel-co2-emissions-by-nation_csv.csv')
-    emissions['Country'] = emissions['Country'].map(lambda n: n.lower())
+    emissions = get_emission_data(args.emission_path)
+    if emissions is None:
+        print("File with emission data not found!", file=sys.stderr)
+        exit(1)
     print(emissions.shape)
 
-    # Deletes extra unnamed columns with NaNs
-    population = pd.read_csv('API_SP.POP.TOTL_DS2_en_csv_v2_4751604/API_SP.POP.TOTL_DS2_en_csv_v2_4751604.csv').dropna(how='all', axis='columns')
+    population = get_population_data(args.population_path)
     print(population.shape)
-    population['Country Name'] = population['Country Name'].map(lambda n: n.lower())
-
-    gdps = pd.read_csv('API_NY.GDP.MKTP.CD_DS2_en_csv_v2_4751562/API_NY.GDP.MKTP.CD_DS2_en_csv_v2_4751562.csv').dropna(how='all', axis='columns')
-    gdps['Country Name'] = gdps['Country Name'].map(lambda n: n.lower())
+    
+    gdps = get_GDP_data(args.GDP_path)
     print(gdps.shape)
 
+    exit(1)
 
 
     countries_emissions = np.sort(emissions['Country'].unique())
