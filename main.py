@@ -15,7 +15,7 @@ if __name__ == "__main__":
     parser.add_argument('-start', type=int, help='lower year threshold for analisys')
     parser.add_argument('-koniec', type=int, help='upper year threshold for analisys')
 
-    # Infinity range
+    # Infinity range if not provided otherwise
     year_range_start = int(-1e9)
     year_range_end = int(1e9)
 
@@ -26,9 +26,6 @@ if __name__ == "__main__":
 
     if args.koniec != None:
         year_range_end = args.koniec
-
-    # print(args.GDP_path, args.population_path, args.emission_path)
-    # print(year_range_start, year_range_end)
 
     # Read data
     emissions = get_emission_data(args.emission_path)
