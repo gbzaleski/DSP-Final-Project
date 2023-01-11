@@ -44,6 +44,7 @@ def constuct_name_matches(emissions, population):
 
     matches = {} # name -> corresponding name in the second dataframe
 
+    # Uses difflib function to find the matching name
     for name in countries_emissions:
         res = difflib.get_close_matches(name, countries_list, len(countries_list), 0)[0]
         matches[name] = res
@@ -69,21 +70,21 @@ def constuct_name_matches(emissions, population):
     matches['republic of korea'] = 'korea, rep.'
     matches['libyan arab jamahiriyah'] = 'libya'
 
-    # Removing corrupted inputs
-    del matches['zanzibar']
-    del matches['antarctic fisheries']
-    del matches['christmas island']
-    del matches['ussr']
-    del matches['united korea']
-    del matches['former panama canal zone']
-    del matches['occupied palestinian territory']
-    del matches['saint helena']
-    del matches['republic of south vietnam']
-    del matches['taiwan']
-    del matches['yugoslavia (former socialist federal republic)']
-    del matches['bonaire, saint eustatius, and saba']
-    del matches['niue']
-    del matches['st. pierre & miquelon']
+    # Removing corrupted inputs (safe-checking if element will cease to exist in the future)
+    matches.pop('zanzibar', None)
+    matches.pop('antarctic fisheries', None)
+    matches.pop('christmas island', None)
+    matches.pop('ussr', None)
+    matches.pop('united korea', None)
+    matches.pop('former panama canal zone', None)
+    matches.pop('occupied palestinian territory', None)
+    matches.pop('saint helena', None)
+    matches.pop('republic of south vietnam', None)
+    matches.pop('taiwan', None)
+    matches.pop('yugoslavia (former socialist federal republic)', None)
+    matches.pop('bonaire, saint eustatius, and saba', None)
+    matches.pop('niue', None)
+    matches.pop('st. pierre & miquelon', None)
 
     return matches
 
@@ -102,7 +103,7 @@ def combine_datasources(emissions, population, gdps):
 
     def getGDP(country_name, year):
         try:
-            return np.float64(gdps.loc[(population['Country Name'] == country_name)][str(year)])
+            return np.float64(gdps.loc[(gdps['Country Name'] == country_name)][str(year)])
         except:
             return np.nan 
         

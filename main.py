@@ -1,8 +1,12 @@
+# Grzegorz B. Zaleski (418494)
+# University of Warsaw, Warsaw, 2023
+
 from analysis import *
 import argparse
 import difflib
 import sys
 
+# Command for running programme
 # clear && python3 main.py API_NY.GDP.MKTP.CD_DS2_en_csv_v2_4751562/API_NY.GDP.MKTP.CD_DS2_en_csv_v2_4751562.csv API_SP.POP.TOTL_DS2_en_csv_v2_4751604/API_SP.POP.TOTL_DS2_en_csv_v2_4751604.csv co2-fossil-by-nation_zip/data/fossil-fuel-co2-emissions-by-nation_csv.csv -start 1950
 if __name__ == "__main__":
 
@@ -27,7 +31,7 @@ if __name__ == "__main__":
     if args.koniec != None:
         year_range_end = args.koniec
 
-    # Read data
+    # Read data from .csv files
     emissions = get_emission_data(args.emission_path)
     if emissions is None:
         print("File with emission data not found!", file=sys.stderr)
@@ -53,6 +57,7 @@ if __name__ == "__main__":
     # Maps the names of countries to match
     emissions['Country'] = emissions['Country'].map(matches)
 
+    # Combines all datasources to 
     data = combine_datasources(emissions, population, gdps)
 
     print(data.shape)
